@@ -1,4 +1,4 @@
-package com.bakerj.demo.rxretrohttp.weather;
+package com.bakerj.demo.rxretrohttp.entity.weather;
 
 import com.bakerj.rxretrohttp.bean.IApiResult;
 

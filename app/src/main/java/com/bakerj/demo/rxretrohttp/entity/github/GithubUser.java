@@ -1,4 +1,6 @@
-package com.bakerj.demo.rxretrohttp.github;
+package com.bakerj.demo.rxretrohttp.entity.github;
+
+import com.bakerj.demo.rxretrohttp.entity.github.GithubApiResult;
 
 public class GithubUser extends GithubApiResult {
     private String login;

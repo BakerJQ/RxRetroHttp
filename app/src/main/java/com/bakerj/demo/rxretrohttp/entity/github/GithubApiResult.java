@@ -1,4 +1,4 @@
-package com.bakerj.demo.rxretrohttp.github;
+package com.bakerj.demo.rxretrohttp.entity.github;
 
 import android.text.TextUtils;
 

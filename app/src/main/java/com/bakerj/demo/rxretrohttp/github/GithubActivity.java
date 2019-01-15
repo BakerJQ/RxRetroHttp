@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.bakerj.demo.rxretrohttp.BaseActivity;
 import com.bakerj.demo.rxretrohttp.R;
+import com.bakerj.demo.rxretrohttp.entity.github.GithubUser;
 import com.bakerj.rxretrohttp.RxRetroHttp;
 import com.bakerj.rxretrohttp.subscriber.ApiObserver;
 import com.bumptech.glide.Glide;

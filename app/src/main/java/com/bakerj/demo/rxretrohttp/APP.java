@@ -2,9 +2,9 @@ package com.bakerj.demo.rxretrohttp;
 
 import android.app.Application;
 
-import com.bakerj.demo.rxretrohttp.gank.GankApiResult;
-import com.bakerj.demo.rxretrohttp.github.GithubApiResult;
-import com.bakerj.demo.rxretrohttp.weather.WeatherApiResult;
+import com.bakerj.demo.rxretrohttp.entity.gank.GankApiResult;
+import com.bakerj.demo.rxretrohttp.entity.github.GithubApiResult;
+import com.bakerj.demo.rxretrohttp.entity.weather.WeatherApiResult;
 import com.bakerj.rxretrohttp.RxRetroHttp;
 import com.bakerj.rxretrohttp.client.SimpleRetroClient;
 import com.blankj.utilcode.util.Utils;

@@ -1,5 +1,7 @@
 package com.bakerj.demo.rxretrohttp.gank;
 
+import com.bakerj.demo.rxretrohttp.entity.gank.GankGirl;
+
 import java.util.List;
 
 import io.reactivex.Observable;

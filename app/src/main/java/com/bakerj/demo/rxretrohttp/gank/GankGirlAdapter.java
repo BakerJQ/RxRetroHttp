@@ -3,6 +3,7 @@ package com.bakerj.demo.rxretrohttp.gank;
 import android.widget.ImageView;
 
 import com.bakerj.demo.rxretrohttp.R;
+import com.bakerj.demo.rxretrohttp.entity.gank.GankGirl;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
 import com.chad.library.adapter.base.BaseQuickAdapter;

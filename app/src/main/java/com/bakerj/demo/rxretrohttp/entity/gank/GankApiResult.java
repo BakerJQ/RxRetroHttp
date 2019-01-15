@@ -1,4 +1,4 @@
-package com.bakerj.demo.rxretrohttp.gank;
+package com.bakerj.demo.rxretrohttp.entity.gank;
 
 import com.bakerj.rxretrohttp.bean.IApiResult;
 

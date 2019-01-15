@@ -1,5 +1,7 @@
 package com.bakerj.demo.rxretrohttp.weather;
 
+import com.bakerj.demo.rxretrohttp.entity.weather.Weather;
+
 import io.reactivex.Observable;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
