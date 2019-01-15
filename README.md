@@ -1,0 +1,112 @@
+# RxRetroHttp
+[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![](https://jitpack.io/v/BakerJQ/RxRetroHttp.svg)](https://jitpack.io/#BakerJQ/RxRetroHttp)
+
+Android http request lib,  supports multiple api result data structures and multiple urls
+Http请求库，支持同时存在多种返回格式和多个base url（[中文文档](https://github.com/BakerJQ/RxRetroHttp/blob/master/README_cn.md)）
+
+## Gradle via JitPack
+Add it in your root build.gradle at the end of repositories:
+``` groovy
+allprojects {
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
+}
+```
+Add the dependency
+``` groovy
+dependencies {
+    implementation 'com.github.BakerJQ:RxRetroHttp:0.1.0'
+}
+
+```
+
+## How to use
+### Initialize
+#### Main Url Request
+Initialize the sdk in Application, the code below shows the initialization of the main url request settings
+```java
+RxRetroHttp.getInstance()
+           .setBaseUrl("https://api.github.com/")//your main url
+           .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
+           .init(this);
+
+```
+#### Other Url Request
+If your app includes other url request, try the code below
+
+Mention:
+- You need to do this after you called init()
+- DON'T forget to add the 'Tag' in addClient() function
+- If you don't set an ApiResultClass, the lib will use GsonConverterFactory as default
+```java
+RxRetroHttp.getInstance()
+           .setApiResultClass(YourApiResult.class)//other result
+           .setBaseUrl("http://host/api/data/")//other url
+           .addClient(new SimpleRetroClient(), "YourTag");//other request tag
+```
+
+### Api Request
+#### Step 1. Define Api Result Structure by Implement IApiResult
+Code below is just a simple sample
+```java
+public class YourApiResult<T> implements IApiResult<T> {
+    private int code;//result code
+    private String msg;//result message
+    private T result;//result data
+    //define what means a successful result(eg. code == 1)
+    @Override
+    public boolean isSuccess();
+    //return the structured data
+    @Override
+    public T getData();
+    //return the message
+    @Override
+    public String getResultMsg();
+    //return the code
+    @Override
+    public String getResultCode();
+    //return the key name of "result" in the response json
+    @Override
+    public String getDataField();
+}
+```
+#### Step 2. Define Retrofit Api Service
+Define the ApiService, to be mentioned, you DO NOT need to use wrapped api result like "Observable<YourApiResult<TestInfo>>"
+```java
+public interface YourApiService {
+    @GET("test/info")
+    Observable<TestInfo> getTestInfo();
+    @GET("test/list")
+    Observable<List<TestInfo>> getTestInfo();
+}
+```
+#### Step 3. Call Request
+Just define a call like Retrofit, if your request is not the main url request, DON'T forget the 'Tag'
+```java
+RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
+```
+
+## Mention
+This is just a beta version, there's still a lot of work to be done.
+
+## *License*
+RxRetroHttp is released under the Apache 2.0 license.
+
+```
+Copyright 2019 BakerJ.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at following link.
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
