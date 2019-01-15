@@ -80,7 +80,7 @@ public class YourApiResult<T> implements IApiResult<T> {
 }
 ```
 #### Step 2. Define Retrofit Api Service
-Define the ApiService, to be mentioned, you DO NOT need to use wrapped api result like "Observable<YourApiResult<TestInfo>>"
+Define the ApiService, to be mentioned, you DO NOT need to use wrapped api result like "Observable<YourApiResult< TestInfo >>"
 ```java
 public interface YourApiService {
     @GET("test/info")

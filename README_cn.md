@@ -78,7 +78,7 @@ public class YourApiResult<T> implements IApiResult<T> {
 }
 ```
 #### 第二步. 定义Retrofit Api Service
-定义Retrofit ApiService, 值得注意的是, 你不需要使用完整的ApiResult包裹数据类的方式（比如说"Observable<YourApiResult<TestInfo>>"）作为返回
+定义Retrofit ApiService, 值得注意的是, 你不需要使用完整的ApiResult包裹数据类的方式（比如说"Observable<YourApiResult< TestInfo >>"）作为返回
 ```java
 public interface YourApiService {
     @GET("test/info")
