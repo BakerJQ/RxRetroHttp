@@ -3,7 +3,14 @@
 [![](https://jitpack.io/v/BakerJQ/RxRetroHttp.svg)](https://jitpack.io/#BakerJQ/RxRetroHttp)
 
 Android http request lib,  supports multiple api result data structures and multiple urls
+
 Http请求库，支持同时存在多种返回格式和多个base url（[中文文档](https://github.com/BakerJQ/RxRetroHttp/blob/master/README_cn.md)）
+## Why RxRetroHttp
+In some case, we have to include more than one http request style -- eg. multiple result structure, multiple host address, multiple http settings, etc-- in one app.
+
+This usually happens when we need to use some third party api or combine multiple system in one project.
+
+RxRetroHttp suppose to simplify your http request realization in this situation.
 
 ## Gradle via JitPack
 Add it in your root build.gradle at the end of repositories:
@@ -25,22 +32,21 @@ dependencies {
 
 ## How to use
 ### Initialize
-#### Main Url Request
+#### Main Api Request
 Initialize the sdk in Application, the code below shows the initialization of the main url request settings
 ```java
 RxRetroHttp.getInstance()
-           .setBaseUrl("https://api.github.com/")//your main url
-           .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
+           .setBaseUrl("https://host/main/")//your main url
+           .setApiResultClass(MainApiResult.class)//your main api result structure, if not, will use default gson converter
            .init(this);
-
 ```
-#### Other Url Request
-If your app includes other url request, try the code below
+#### Other Api Request
+If your app includes other api request, try the code below
 
 Mention:
 - You need to do this after you called init()
 - DON'T forget to add the 'Tag' in addClient() function
-- If you don't set an ApiResultClass, the lib will use GsonConverterFactory as default
+- If you don't set an ApiResultClass, the lib will use GsonConverterFactory as default, this means that the lib will not deal with response logic for you, or you can add your own ResponseConverter
 ```java
 RxRetroHttp.getInstance()
            .setApiResultClass(YourApiResult.class)//other result
@@ -88,9 +94,19 @@ Just define a call like Retrofit, if your request is not the main url request, D
 ```java
 RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
 ```
+## Proguard
+- Add Retrofit proguard
+- Add OkHttp proguard
+- Add Gson proguard
+- Deal with your data entity
+
+## Thanks
+Thanks To （[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）
 
 ## Mention
 This is just a beta version, there's still a lot of work to be done.
+
+The introduction for now is still a simple version.
 
 ## *License*
 RxRetroHttp is released under the Apache 2.0 license.
