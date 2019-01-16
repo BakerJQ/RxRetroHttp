@@ -51,6 +51,19 @@ RxRetroHttp.getInstance()
            .setBaseUrl("http://host/api/data/")//另一个url
            .addClient(new SimpleRetroClient(), "YourTag");//指示该种API请求的Tag
 ```
+#### 配置
+如果你想要自定义http配置，你可以通过获取builder的方式或者直接调用set方法
+
+注: 必须在init()或者addClient()之前进行配置
+```java
+RxRetroHttp.getInstance().setXXX().setXXX();
+Retrofit.Builder retrofitBuilder = RxRetroHttp.getRetrofitBuilder();
+retrofitBuilder.setXXX().setXXX();
+OkHttpClient.Builder okHttpBuilder = RxRetroHttp.getOkHttpClientBuilder();
+okHttpBuilder.setXXX().setXXX();
+RxRetroHttp.getInstance().init(this);
+//RxRetroHttp.getInstance().addClient(new SimpleRetroClient(), "YourTag")
+```
 
 ### Api请求
 #### 第一步. 定义数据返回类

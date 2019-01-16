@@ -53,6 +53,19 @@ RxRetroHttp.getInstance()
            .setBaseUrl("http://host/api/data/")//other url
            .addClient(new SimpleRetroClient(), "YourTag");//other request tag
 ```
+#### Settings
+You can customize your http settings by get and reset the builders, or calling setting functions
+
+Mention: This must be done BEFORE init() or addClient() function
+```java
+RxRetroHttp.getInstance().setXXX().setXXX();
+Retrofit.Builder retrofitBuilder = RxRetroHttp.getRetrofitBuilder();
+retrofitBuilder.setXXX().setXXX();
+OkHttpClient.Builder okHttpBuilder = RxRetroHttp.getOkHttpClientBuilder();
+okHttpBuilder.setXXX().setXXX();
+RxRetroHttp.getInstance().init(this);
+//RxRetroHttp.getInstance().addClient(new SimpleRetroClient(), "YourTag")
+```
 
 ### Api Request
 #### Step 1. Define Api Result Structure by Implement IApiResult
