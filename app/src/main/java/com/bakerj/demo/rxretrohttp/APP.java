@@ -16,18 +16,28 @@ public class APP extends Application {
         Utils.init(this);
         RxRetroHttp.getInstance()
                 .setBaseUrl("https://api.github.com/")//your main url
-                .setDefaultErrMsg("网络开小差了")//default error hint message
+                .setDefaultErrMsg("Github开小差了")//default error hint message
                 .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
-                .init(this);
-        gankInit();
-        weatherInit();
+                .init(this)
+
+                .setApiResultClass(GankApiResult.class)//other result
+                .setBaseUrl("http://gank.io/api/data/")//other url
+                .setDefaultErrMsg("Gank开小差了")
+                .generateRetroClient("Gank")
+
+                .setApiResultClass(WeatherApiResult.class)
+                .setBaseUrl("https://www.sojson.com/open/api/weather/")
+                .setDefaultErrMsg("Weather开小差了")
+                .addClient(new SimpleRetroClient(), "Weather");//other request tag;
+//        gankInit();
+//        weatherInit();
     }
 
     private void gankInit() {
         RxRetroHttp.getInstance()
                 .setApiResultClass(GankApiResult.class)//other result
                 .setBaseUrl("http://gank.io/api/data/")//other url
-                .addClient(new SimpleRetroClient(), "Gank");//other request tag
+                .generateRetroClient("Gank");//other request tag
     }
 
     private void weatherInit() {
@@ -36,5 +46,4 @@ public class APP extends Application {
                 .setBaseUrl("https://www.sojson.com/open/api/weather/")
                 .addClient(new SimpleRetroClient(), "Weather");
     }
-
 }

@@ -19,12 +19,10 @@ public class RetryExceptionFunc implements Function<Observable<? extends Throwab
         Observable<?>> {
     private int count;//current retry count 当前retry次数
     private long delay;//retry delay 重试延时
-    private long increaseDelay;//retry increase 重试延时增量
 
-    public RetryExceptionFunc(int count, long delay, long increaseDelay) {
+    public RetryExceptionFunc(int count, long delay) {
         this.count = count;
         this.delay = delay;
-        this.increaseDelay = increaseDelay;
     }
 
     @Override
@@ -44,8 +42,7 @@ public class RetryExceptionFunc implements Function<Observable<? extends Throwab
                             || wrapper.throwable instanceof SocketTimeoutException
                             || wrapper.throwable instanceof TimeoutException)
                             && wrapper.index < count + 1) {
-                        return Observable.timer(delay + (wrapper.index - 1) * increaseDelay,
-                                TimeUnit.MILLISECONDS);
+                        return Observable.timer(delay, TimeUnit.MILLISECONDS);
 
                     }
                     return Observable.error(wrapper.throwable);

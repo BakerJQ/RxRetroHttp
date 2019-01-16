@@ -44,7 +44,7 @@ public class ApiException extends IOException {
         return apiResult != null && apiResult.isSuccess();
     }
 
-    public static ApiException handleException(Throwable e) {
+    public static ApiException handleException(Throwable e, String defaultErrMsg) {
         ApiException ex;
         if (e instanceof SuccessWithNullDataException) {
             ex = new ApiException(e, DATA_NULL);
@@ -54,38 +54,38 @@ public class ApiException extends IOException {
             HttpException httpException = (HttpException) e;
             ex = new ApiException(httpException, String.valueOf(httpException.code()));
 //            ex.message = httpException.getMessage();
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof com.jakewharton.retrofit2.adapter.rxjava2.HttpException) {
             com.jakewharton.retrofit2.adapter.rxjava2.HttpException httpException = (com
                     .jakewharton.retrofit2.adapter.rxjava2.HttpException) e;
             ex = new ApiException(httpException, String.valueOf(httpException.code()));
 //            ex.message = httpException.getMessage();
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof ServerException) {
             ServerException resultException = (ServerException) e;
             ex = new ApiException(resultException, resultException.getCode());
 //            ex.message = resultException.getMessage();
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ApiException(e, NETWORK_ERROR);
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof ConnectTimeoutException) {
             ex = new ApiException(e, TIMEOUT_ERROR);
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof java.net.SocketTimeoutException) {
             ex = new ApiException(e, TIMEOUT_ERROR);
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         } else if (e instanceof ApiException) {
             return (ApiException) e;
         } else {
             ex = new ApiException(e, NOT_CARE);
-            ex.message = RxRetroHttp.getDefaultErrMsg();
+            ex.message = defaultErrMsg;
             return ex;
         }
     }

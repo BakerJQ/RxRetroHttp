@@ -2,6 +2,9 @@ package com.bakerj.rxretrohttp.client;
 
 import com.bakerj.rxretrohttp.RxRetroHttp;
 import com.bakerj.rxretrohttp.converter.RetroGsonConverterFactory;
+import com.bakerj.rxretrohttp.exception.ApiException;
+import com.bakerj.rxretrohttp.exception.IExceptionHandler;
+import com.bakerj.rxretrohttp.func.ExceptionHandleFunc;
 import com.bakerj.rxretrohttp.func.RetryExceptionFunc;
 import com.bakerj.rxretrohttp.interceptors.HttpLoggingInterceptor;
 import com.bakerj.rxretrohttp.util.RxSchedulerUtil;
@@ -28,12 +31,13 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
     private String mBaseUrl;//api base url 请求地址
     private int mRetryCount;//retry count 重试次数
     private int mRetryDelay;//retry delay 重试延时
-    private int mRetryIncreaseDelay;//retry delay increased 重试延迟增量
     private boolean mIsDebug;//is debug mode 是否为debug
     private Retrofit mRetrofit;
     private OkHttpClient mOkHttpClient;
     private OkHttpClient.Builder mOkHttpClientBuilder;
     private Retrofit.Builder mRetrofitBuilder;
+    private IExceptionHandler mExceptionHandler;
+    private String mDefaultErrMsg;
 
     /**
      * 初始化
@@ -43,8 +47,12 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
         mBaseUrl = RxRetroHttp.getBaseUrl();
         mRetryCount = RxRetroHttp.getRetryCount();
         mRetryDelay = RxRetroHttp.getRetryDelay();
-        mRetryIncreaseDelay = RxRetroHttp.getRetryIncreaseDelay();
         mIsDebug = RxRetroHttp.isDebug();
+        mDefaultErrMsg = RxRetroHttp.getDefaultErrMsg();
+        mExceptionHandler = RxRetroHttp.getExceptionHandler();
+        if (mExceptionHandler == null) {
+            mExceptionHandler = throwable -> ApiException.handleException(throwable, mDefaultErrMsg);
+        }
         generateOkClient();
         generateRetrofit();
     }
@@ -55,17 +63,21 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
      */
     private void generateOkClient() {
         mOkHttpClientBuilder = RxRetroHttp.getOkHttpClient().newBuilder();
+        setOkHttpClientBuilder(mOkHttpClientBuilder);
+    }
+
+    protected void setOkHttpClientBuilder(OkHttpClient.Builder okHttpClientBuilder) {
         for (Interceptor interceptor : interceptors) {
-            mOkHttpClientBuilder.addInterceptor(interceptor);
+            okHttpClientBuilder.addInterceptor(interceptor);
         }
         if (networkInterceptors.size() > 0) {
             for (Interceptor interceptor : networkInterceptors) {
-                mOkHttpClientBuilder.addNetworkInterceptor(interceptor);
+                okHttpClientBuilder.addNetworkInterceptor(interceptor);
             }
         }
         if (mIsDebug) {
-            mOkHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
-            mOkHttpClientBuilder.addInterceptor(new HttpLoggingInterceptor().setLevel
+            okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
+            okHttpClientBuilder.addInterceptor(new HttpLoggingInterceptor().setLevel
                     (HttpLoggingInterceptor.Level.BODY));
         }
     }
@@ -87,8 +99,7 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
             return;
         }
         retrofitBuilder.addConverterFactory(RetroGsonConverterFactory.create(RxRetroHttp
-                .getApiResultClass()))
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+                .getApiResultClass())).addCallAdapterFactory(RxJava2CallAdapterFactory.create());
     }
 
     /**
@@ -118,6 +129,7 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
     public <T> ObservableTransformer<T, T> composeApi() {
         return observable -> observable
                 .compose(RxSchedulerUtil.apiIoToMain())
-                .retryWhen(new RetryExceptionFunc(mRetryCount, mRetryDelay, mRetryIncreaseDelay));
+                .onErrorResumeNext(new ExceptionHandleFunc<>(mExceptionHandler))
+                .retryWhen(new RetryExceptionFunc(mRetryCount, mRetryDelay));
     }
 }

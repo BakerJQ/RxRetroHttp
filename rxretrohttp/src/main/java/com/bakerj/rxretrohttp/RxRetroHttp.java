@@ -5,13 +5,11 @@ import android.app.Application;
 
 import com.bakerj.rxretrohttp.client.BaseRetroClient;
 import com.bakerj.rxretrohttp.client.SimpleRetroClient;
-import com.bakerj.rxretrohttp.https.HttpsUtils;
-import com.bakerj.rxretrohttp.interceptors.DateFixInterceptor;
+import com.bakerj.rxretrohttp.exception.IExceptionHandler;
 import com.bakerj.rxretrohttp.interfaces.IBaseApiAction;
 import com.facebook.stetho.Stetho;
 import com.trello.rxlifecycle2.LifecycleTransformer;
 
-import java.io.InputStream;
 import java.net.CookieHandler;
 import java.net.CookieManager;
 import java.net.CookiePolicy;
@@ -21,8 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.X509TrustManager;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableTransformer;
@@ -40,7 +36,6 @@ public class RxRetroHttp {
 
     private static final int DEFAULT_TIMEOUT = 10000;//default timeout 默认3chaoshi
     private static final int DEFAULT_RETRY_COUNT = 3;//default retry count 默认重试
-    private static final int DEFAULT_RETRY_INCREASE_DELAY = 0;//default retry increase 默认重试延时增量
     private static final int DEFAULT_RETRY_DELAY = 500;//default retry delay 默认重试延时
     @SuppressLint("StaticFieldLeak")
     private static Application sApplication;
@@ -50,7 +45,6 @@ public class RxRetroHttp {
     private int mTimeOut = DEFAULT_TIMEOUT;//time out 超时
     private int mRetryCount = DEFAULT_RETRY_COUNT;//retry count 重试次数
     private int mRetryDelay = DEFAULT_RETRY_DELAY;//retry delay 重试延时
-    private int mRetryIncreaseDelay = DEFAULT_RETRY_INCREASE_DELAY;//retry increase 重试延时增量
     private OkHttpClient.Builder mOkHttpClientBuilder;//okhttp builder
     private Retrofit.Builder mRetrofitBuilder;//retrofit builder
     private BaseRetroClient mCommonRetroClient;//retro client
@@ -58,8 +52,9 @@ public class RxRetroHttp {
     //tag-请求Client对，用于处理多返回结果和多url的情况
     private Map<String, BaseRetroClient> mRetroClientMap = new HashMap<>();
     private boolean mIsDebug = false;//isDebug
-    private Class apiResultClass;//api result class 返回结果对应的类
-    private String defaultErrorMsg = "";
+    private Class mApiResultClass;//api result class 返回结果对应的类
+    private String mDefaultErrorMsg = "";
+    private IExceptionHandler mExceptionHandler;
 
     private RxRetroHttp() {
         generateOkHttpBuilder();
@@ -105,20 +100,29 @@ public class RxRetroHttp {
     }
 
     public static Class getApiResultClass() {
-        return getInstance().apiResultClass;
+        return getInstance().mApiResultClass;
     }
 
     public RxRetroHttp setApiResultClass(Class apiResultClass) {
-        this.apiResultClass = apiResultClass;
+        this.mApiResultClass = apiResultClass;
         return this;
     }
 
     public static String getDefaultErrMsg() {
-        return getInstance().defaultErrorMsg;
+        return getInstance().mDefaultErrorMsg;
     }
 
     public RxRetroHttp setDefaultErrMsg(String errMsg) {
-        this.defaultErrorMsg = errMsg;
+        this.mDefaultErrorMsg = errMsg;
+        return this;
+    }
+
+    public static IExceptionHandler getExceptionHandler() {
+        return getInstance().mExceptionHandler;
+    }
+
+    public RxRetroHttp setExceptionHandler(IExceptionHandler exceptionHandler) {
+        this.mExceptionHandler = exceptionHandler;
         return this;
     }
 
@@ -128,10 +132,6 @@ public class RxRetroHttp {
 
     public static int getRetryDelay() {
         return getInstance().mRetryDelay;
-    }
-
-    public static int getRetryIncreaseDelay() {
-        return getInstance().mRetryIncreaseDelay;
     }
 
     public static boolean isDebug() {
@@ -171,14 +171,6 @@ public class RxRetroHttp {
         return retroClient.composeApi();
     }
 
-    public static void createRetroClient(String tag) {
-        getInstance().getRetroClient(tag);
-    }
-
-    public static Application getApp() {
-        return RxRetroHttp.sApplication;
-    }
-
     private void generateOkHttpBuilder() {
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
@@ -187,41 +179,11 @@ public class RxRetroHttp {
                 .connectTimeout(mTimeOut, TimeUnit.MILLISECONDS)
                 .readTimeout(mTimeOut, TimeUnit.MILLISECONDS)
                 .writeTimeout(mTimeOut, TimeUnit.MILLISECONDS)
-                .cookieJar(new JavaNetCookieJar(cookieManager))
-                .addInterceptor(new DateFixInterceptor());
+                .cookieJar(new JavaNetCookieJar(cookieManager));
     }
 
     private void generateRetrofitBuilder() {
         mRetrofitBuilder = new Retrofit.Builder();
-
-    }
-
-    public RxRetroHttp setHostnameVerifier(HostnameVerifier hostnameVerifier) {
-        mOkHttpClientBuilder.hostnameVerifier(hostnameVerifier);
-        return this;
-    }
-
-    public RxRetroHttp setCertificates(InputStream... certificates) {
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, certificates);
-        mOkHttpClientBuilder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-        return this;
-    }
-
-    public RxRetroHttp setCertificates(InputStream bksFile, String password, InputStream...
-            certificates) {
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(bksFile, password,
-                certificates);
-        mOkHttpClientBuilder.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-        return this;
-    }
-
-    public RxRetroHttp sslSocketFactory(
-            SSLSocketFactory sslSocketFactory, X509TrustManager trustManager) {
-        if (sslSocketFactory == null || trustManager == null) {
-            return this;
-        }
-        mOkHttpClientBuilder.sslSocketFactory(sslSocketFactory, trustManager);
-        return this;
     }
 
     public RxRetroHttp setTimeOut(int timeOut) {
@@ -261,25 +223,28 @@ public class RxRetroHttp {
         return this;
     }
 
-    public void init(Application app) {
+    public RxRetroHttp init(Application app) {
         if (sApplication != null) {
-            return;
+            return this;
         }
         RxRetroHttp.sApplication = app;
         if (mIsDebug) {
             Stetho.initializeWithDefaults(app);
         }
         mCommonRetroClient = new SimpleRetroClient().build();
+        return this;
     }
 
-    public void addClient(BaseRetroClient client, String tag) {
+    public RxRetroHttp addClient(BaseRetroClient client, String tag) {
         client.build();
         mRetroClientMap.put(tag, client);
+        return this;
     }
 
-    public void generateRetroClient(String tag) {
+    public RxRetroHttp generateRetroClient(String tag) {
         SimpleRetroClient retroClient = new SimpleRetroClient().build();
         mRetroClientMap.put(tag, retroClient);
+        return this;
     }
 
     private BaseRetroClient getRetroClient(String tag) {

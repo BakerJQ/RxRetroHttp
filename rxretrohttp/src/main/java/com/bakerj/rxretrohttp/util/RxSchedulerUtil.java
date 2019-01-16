@@ -16,8 +16,7 @@ public class RxSchedulerUtil {
         return upstream -> upstream
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .onErrorResumeNext(new ExceptionHandleFunc<T>());
+                .observeOn(AndroidSchedulers.mainThread());
     }
 
     public static <T> ObservableTransformer<T, T> ioToMain() {
