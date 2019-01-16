@@ -23,7 +23,7 @@ allprojects {
 在app或相应使用的module中加入
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:0.1.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.0'
 }
 
 ```
@@ -33,36 +33,37 @@ dependencies {
 #### 主Url请求
 在Application中初始化sdk，下面的代码展示了如何初始化，该初始化所绑定的请求方式为app主要的请求方式
 ```java
-RxRetroHttp.getInstance()
-           .setBaseUrl("https://host/main/")//主url
-           .setApiResultClass(MainApiResult.class)//主api请求返回的数据结构类, 如果不设置, 将使用默认的gson converter
-           .init(this);
+RxRetroHttp.init(this)
+           .setBaseUrl("https://api.github.com/")//your main url
+           .setDefaultErrMsg("Github开小差了")//default error hint message
+           .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
+           .generateRetroClient()
 ```
 #### 其他多套Api请求
 如果你的app存在更多套的api请求方式，尝试下面的代码
 
 注:
 - 其他的Api初始化需要在init()之后
-- 初始化时，不要忘了在addClient方法中加入相应的Tag
+- 初始化时，不要忘了在generateRetroClient方法中加入相应的Tag
 - 如果你不设置ApiResultClass, 那么库将会使用默认的GsonConverterFactory去解析返回数据，这意味着库本身将不会为你处理判断返回数据的逻辑，或者你可以设置自己的ResponseConverter
 ```java
 RxRetroHttp.getInstance()
            .setApiResultClass(YourApiResult.class)//另一个的返回数据结构类
            .setBaseUrl("http://host/api/data/")//另一个url
-           .addClient(new SimpleRetroClient(), "YourTag");//指示该种API请求的Tag
+           .generateRetroClient("YourTag");//指示该种API请求的Tag
 ```
 #### 配置
 如果你想要自定义http配置，你可以通过获取builder的方式或者直接调用set方法
 
-注: 必须在init()或者addClient()之前进行配置
+注: 必须在init()和generateRetroClient()之间进行配置
 ```java
-RxRetroHttp.getInstance().setXXX().setXXX();
+RxRetroHttp.init().setXXX().setXXX();
 Retrofit.Builder retrofitBuilder = RxRetroHttp.getRetrofitBuilder();
 retrofitBuilder.setXXX().setXXX();
 OkHttpClient.Builder okHttpBuilder = RxRetroHttp.getOkHttpClientBuilder();
 okHttpBuilder.setXXX().setXXX();
-RxRetroHttp.getInstance().init(this);
-//RxRetroHttp.getInstance().addClient(new SimpleRetroClient(), "YourTag")
+RxRetroHttp.getInstance().generateRetroClient();
+//RxRetroHttp.getInstance().generateRetroClient("YourTag")
 ```
 
 ### Api请求
@@ -107,11 +108,6 @@ RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
 ```
 ## 感谢
 感谢（[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）提供的思路
-
-## 告知
-目前只是beta版，还有许多需要完善改进的地方，也有许多需要增加的功能
-
-这份README也只是简单的介绍，待完善
 
 ## *License*
 RxRetroHttp is released under the Apache 2.0 license.

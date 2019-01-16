@@ -25,7 +25,7 @@ allprojects {
 Add the dependency
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:0.1.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.0'
 }
 
 ```
@@ -35,36 +35,37 @@ dependencies {
 #### Main Api Request
 Initialize the sdk in Application, the code below shows the initialization of the main url request settings
 ```java
-RxRetroHttp.getInstance()
-           .setBaseUrl("https://host/main/")//your main url
-           .setApiResultClass(MainApiResult.class)//your main api result structure, if not, will use default gson converter
-           .init(this);
+RxRetroHttp.init(this)
+           .setBaseUrl("https://api.github.com/")//your main url
+           .setDefaultErrMsg("Github开小差了")//default error hint message
+           .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
+           .generateRetroClient()
 ```
 #### Other Api Request
 If your app includes other api request, try the code below
 
 Mention:
 - You need to do this after you called init()
-- DON'T forget to add the 'Tag' in addClient() function
+- DON'T forget to add the 'Tag' in generateRetroClient() function
 - If you don't set an ApiResultClass, the lib will use GsonConverterFactory as default, this means that the lib will not deal with response logic for you, or you can add your own ResponseConverter
 ```java
 RxRetroHttp.getInstance()
            .setApiResultClass(YourApiResult.class)//other result
            .setBaseUrl("http://host/api/data/")//other url
-           .addClient(new SimpleRetroClient(), "YourTag");//other request tag
+           .generateRetroClient("YourTag");//other request tag
 ```
 #### Settings
 You can customize your http settings by get and reset the builders, or calling setting functions
 
-Mention: This must be done BEFORE init() or addClient() function
+Mention: This must be done AFTER init() and BEFORE generateRetroClient() function
 ```java
-RxRetroHttp.getInstance().setXXX().setXXX();
+RxRetroHttp.init().setXXX().setXXX();
 Retrofit.Builder retrofitBuilder = RxRetroHttp.getRetrofitBuilder();
 retrofitBuilder.setXXX().setXXX();
 OkHttpClient.Builder okHttpBuilder = RxRetroHttp.getOkHttpClientBuilder();
 okHttpBuilder.setXXX().setXXX();
-RxRetroHttp.getInstance().init(this);
-//RxRetroHttp.getInstance().addClient(new SimpleRetroClient(), "YourTag")
+RxRetroHttp.getInstance().generateRetroClient();
+//RxRetroHttp.getInstance().generateRetroClient("YourTag")
 ```
 
 ### Api Request
@@ -115,11 +116,6 @@ RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
 
 ## Thanks
 Thanks To （[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）
-
-## Mention
-This is just a beta version, there's still a lot of work to be done.
-
-The introduction for now is still a simple version.
 
 ## *License*
 RxRetroHttp is released under the Apache 2.0 license.
