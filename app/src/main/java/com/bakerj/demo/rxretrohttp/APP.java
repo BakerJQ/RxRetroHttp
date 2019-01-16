@@ -14,11 +14,11 @@ public class APP extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-        RxRetroHttp.getInstance()
+        RxRetroHttp.init(this)
                 .setBaseUrl("https://api.github.com/")//your main url
                 .setDefaultErrMsg("Github开小差了")//default error hint message
                 .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
-                .init(this)
+                .generateRetroClient()
 
                 .setApiResultClass(GankApiResult.class)//other result
                 .setBaseUrl("http://gank.io/api/data/")//other url

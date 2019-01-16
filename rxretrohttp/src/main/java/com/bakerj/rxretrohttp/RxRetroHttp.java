@@ -223,7 +223,11 @@ public class RxRetroHttp {
         return this;
     }
 
-    public RxRetroHttp init(Application app) {
+    public static RxRetroHttp init(Application app) {
+        return RxRetroHttp.getInstance().initiate(app);
+    }
+
+    public RxRetroHttp initiate(Application app) {
         if (sApplication != null) {
             return this;
         }
@@ -231,19 +235,28 @@ public class RxRetroHttp {
         if (mIsDebug) {
             Stetho.initializeWithDefaults(app);
         }
+        return this;
+    }
+
+    public RxRetroHttp generateRetroClient() {
         mCommonRetroClient = new SimpleRetroClient().build();
         return this;
     }
 
-    public RxRetroHttp addClient(BaseRetroClient client, String tag) {
-        client.build();
-        mRetroClientMap.put(tag, client);
+    public RxRetroHttp setRetroClient(BaseRetroClient client) {
+        mCommonRetroClient = client.build();
         return this;
     }
 
     public RxRetroHttp generateRetroClient(String tag) {
         SimpleRetroClient retroClient = new SimpleRetroClient().build();
         mRetroClientMap.put(tag, retroClient);
+        return this;
+    }
+
+    public RxRetroHttp addClient(BaseRetroClient client, String tag) {
+        client.build();
+        mRetroClientMap.put(tag, client);
         return this;
     }
 
