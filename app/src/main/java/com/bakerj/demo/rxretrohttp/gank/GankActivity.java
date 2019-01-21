@@ -24,8 +24,8 @@ public class GankActivity extends BaseActivity {
         recyclerView = findViewById(R.id.rv_gank);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
-        RxRetroHttp.composeRequest(RxRetroHttp.create(GankApi.class, "Gank").getGankGirls(),
-                this, "Gank")
+        RxRetroHttp.composeRequest(RxRetroHttp.create(GankApi.class).getGankGirls(),
+                this, GankApi.class)
                 .subscribe(new ApiObserver<List<GankGirl>>(this) {
                     @Override
                     protected void success(List<GankGirl> data) {

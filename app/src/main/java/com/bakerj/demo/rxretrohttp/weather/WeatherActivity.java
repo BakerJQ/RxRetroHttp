@@ -25,8 +25,8 @@ public class WeatherActivity extends BaseActivity {
         textView = findViewById(R.id.tv_weather_result);
         button = findViewById(R.id.btn_weather_search);
         button.setOnClickListener(v -> RxRetroHttp.composeRequest
-                (RxRetroHttp.create(WeatherApi.class, "Weather").getWeather
-                        (editText.getText().toString()), this, "Weather")
+                (RxRetroHttp.create(WeatherApi.class).getWeather
+                        (editText.getText().toString()), this, WeatherApi.class)
                 .subscribe(new ApiObserver<Weather>() {
                     @Override
                     protected void onStart() {
