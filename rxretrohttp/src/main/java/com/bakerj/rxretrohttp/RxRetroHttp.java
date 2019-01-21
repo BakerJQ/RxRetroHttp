@@ -3,6 +3,7 @@ package com.bakerj.rxretrohttp;
 import android.annotation.SuppressLint;
 import android.app.Application;
 
+import com.bakerj.rxretrohttp.annotation.RetroTag;
 import com.bakerj.rxretrohttp.client.BaseRetroClient;
 import com.bakerj.rxretrohttp.client.SimpleRetroClient;
 import com.bakerj.rxretrohttp.exception.IExceptionHandler;
@@ -144,6 +145,10 @@ public class RxRetroHttp {
     }
 
     public static <T> T create(Class<T> cls) {
+        RetroTag retroTag = cls.getAnnotation(RetroTag.class);
+        if (retroTag != null) {
+            return create(cls, retroTag.tag());
+        }
         return (T) getInstance().mCommonRetroClient.create(cls);
     }
 
@@ -277,22 +282,31 @@ public class RxRetroHttp {
         }
     }
 
-    public static <T> Observable<T> composeRequest(Observable<T> observable, IBaseApiAction
-            apiAction) {
+    public static <T> Observable<T> composeRequest(Observable<T> observable,
+                                                   IBaseApiAction apiAction, Class<?> apiService) {
+        RetroTag retroTag = apiService.getAnnotation(RetroTag.class);
+        if (retroTag != null) {
+            return composeRequest(observable, apiAction, retroTag.tag());
+        }
+        return composeRequest(observable, apiAction);
+    }
+
+    public static <T> Observable<T> composeRequest(Observable<T> observable,
+                                                   IBaseApiAction apiAction) {
         return observable.compose(composeLifecycle(apiAction))
                 .compose(composeApi());
     }
 
-    public static <T> Observable<T> composeRequest(Observable<T> observable, IBaseApiAction
-            apiAction, String tag) {
+    public static <T> Observable<T> composeRequest(Observable<T> observable,
+                                                   IBaseApiAction apiAction, String tag) {
         return observable.compose(composeLifecycle(apiAction))
                 .compose(composeApi(tag));
     }
 
     private static <T> ObservableTransformer<T, T> composeLifecycle(IBaseApiAction apiAction) {
         return upstream -> {
-            LifecycleTransformer<T> lifecycleTransformer = apiAction == null ? null : apiAction
-                    .getLifecycleTransformer();
+            LifecycleTransformer<T> lifecycleTransformer = apiAction == null ? null :
+                    apiAction.getLifecycleTransformer();
             if (lifecycleTransformer != null) {
                 upstream = upstream.compose(lifecycleTransformer);
             }
