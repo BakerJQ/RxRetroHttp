@@ -25,7 +25,7 @@ allprojects {
 Add the dependency
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.3'
 }
 
 ```
@@ -94,8 +94,9 @@ public class YourApiResult<T> implements IApiResult<T> {
 }
 ```
 #### Step 2. Define Retrofit Api Service
-Define the ApiService, to be mentioned, you DO NOT need to use wrapped api result like "Observable<YourApiResult< TestInfo >>"
+Define the ApiService, to be mentioned, you DO NOT need to use wrapped api result like "Observable<YourApiResult< TestInfo >>", and add RetroTag annotation if this is a tagged request
 ```java
+@RetroTag("YourTag")
 public interface YourApiService {
     @GET("test/info")
     Observable<TestInfo> getTestInfo();
@@ -104,9 +105,9 @@ public interface YourApiService {
 }
 ```
 #### Step 3. Call Request
-Just define a call like Retrofit, if your request is not the main url request, DON'T forget the 'Tag'
+Just define a call like Retrofit
 ```java
-RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
+RxRetroHttp.create(YourApiService.class).getTestInfo()
 ```
 ## Proguard
 - Add Retrofit proguard

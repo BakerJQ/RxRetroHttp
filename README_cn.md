@@ -26,7 +26,7 @@ allprojects {
 在app或相应使用的module中加入
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.3'
 }
 
 ```
@@ -95,8 +95,9 @@ public class YourApiResult<T> implements IApiResult<T> {
 }
 ```
 #### 第二步. 定义Retrofit Api Service
-定义Retrofit ApiService, 值得注意的是, 你不需要使用完整的ApiResult包裹数据类的方式（比如说"Observable<YourApiResult< TestInfo >>"）作为返回
+定义Retrofit ApiService, 值得注意的是, 你不需要使用完整的ApiResult包裹数据类的方式（比如说"Observable<YourApiResult< TestInfo >>"）作为返回，可以通过RetroTag注解标示tag
 ```java
+@RetroTag("YourTag")
 public interface YourApiService {
     @GET("test/info")
     Observable<TestInfo> getTestInfo();
@@ -105,9 +106,9 @@ public interface YourApiService {
 }
 ```
 #### 第三步. 调用
-像Retrofit一样调用, 如果是定义时候包含tag的请求, 请加上Tag
+像Retrofit一样调用
 ```java
-RxRetroHttp.create(YourApiService.class, "YourTag").getTestInfo()
+RxRetroHttp.create(YourApiService.class).getTestInfo()
 ```
 ## 感谢
 感谢（[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）提供的思路
