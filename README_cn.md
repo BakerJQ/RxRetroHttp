@@ -3,6 +3,9 @@
 [![](https://jitpack.io/v/BakerJQ/RxRetroHttp.svg)](https://jitpack.io/#BakerJQ/RxRetroHttp)
 
 Http请求库，支持同时存在多种返回格式和多个base url
+
+文章介绍：https://www.bakerjq.com/2019/01/19/20190119_RxRetroHttp/
+
 ## 为何会存在此库
 时不时总会出现这么一种情况，那就是一个app中存在多套api请求，比如需要请求不同域名下的接口、不同接口返回格式不一致、不同接口需要传不同的header等等
 
