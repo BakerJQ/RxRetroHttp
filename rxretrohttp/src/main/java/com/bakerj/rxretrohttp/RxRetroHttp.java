@@ -9,7 +9,7 @@ import com.bakerj.rxretrohttp.client.SimpleRetroClient;
 import com.bakerj.rxretrohttp.exception.IExceptionHandler;
 import com.bakerj.rxretrohttp.interfaces.IBaseApiAction;
 import com.facebook.stetho.Stetho;
-import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle3.LifecycleTransformer;
 
 import java.net.CookieHandler;
 import java.net.CookieManager;

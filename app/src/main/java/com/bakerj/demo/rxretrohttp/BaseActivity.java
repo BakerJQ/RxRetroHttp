@@ -4,9 +4,9 @@ import android.widget.Toast;
 
 import com.bakerj.rxretrohttp.interfaces.IBaseApiAction;
 import com.blankj.utilcode.util.ToastUtils;
-import com.trello.rxlifecycle2.LifecycleTransformer;
-import com.trello.rxlifecycle2.android.ActivityEvent;
-import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
+import com.trello.rxlifecycle3.LifecycleTransformer;
+import com.trello.rxlifecycle3.android.ActivityEvent;
+import com.trello.rxlifecycle3.components.support.RxAppCompatActivity;
 
 public class BaseActivity extends RxAppCompatActivity implements IBaseApiAction {
     @Override

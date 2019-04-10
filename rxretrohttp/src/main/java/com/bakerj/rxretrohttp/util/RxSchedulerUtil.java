@@ -1,8 +1,7 @@
 package com.bakerj.rxretrohttp.util;
 
-import com.bakerj.rxretrohttp.func.ExceptionHandleFunc;
 import com.bakerj.rxretrohttp.interfaces.IBaseApiAction;
-import com.trello.rxlifecycle2.LifecycleTransformer;
+import com.trello.rxlifecycle3.LifecycleTransformer;
 
 import io.reactivex.ObservableTransformer;
 import io.reactivex.android.schedulers.AndroidSchedulers;

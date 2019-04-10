@@ -1,6 +1,7 @@
 package com.bakerj.rxretrohttp.interfaces;
 
-import com.trello.rxlifecycle2.LifecycleTransformer;
+
+import com.trello.rxlifecycle3.LifecycleTransformer;
 
 public interface IBaseApiAction {
     void showLoading();
