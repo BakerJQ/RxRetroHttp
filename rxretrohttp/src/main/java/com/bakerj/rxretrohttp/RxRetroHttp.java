@@ -139,6 +139,11 @@ public class RxRetroHttp {
         return getInstance().mIsDebug;
     }
 
+    /**
+     * Deprecated
+     * Use {@link RxRetroHttp#init(Application, boolean)} instead
+     */
+    @Deprecated
     public RxRetroHttp setDebug(boolean isDebug) {
         mIsDebug = isDebug;
         return this;
@@ -229,7 +234,11 @@ public class RxRetroHttp {
     }
 
     public static RxRetroHttp init(Application app) {
-        return RxRetroHttp.getInstance().initiate(app);
+        return init(app, false);
+    }
+
+    public static RxRetroHttp init(Application app, boolean isDebug) {
+        return RxRetroHttp.getInstance().setDebug(isDebug).initiate(app);
     }
 
     public RxRetroHttp initiate(Application app) {
