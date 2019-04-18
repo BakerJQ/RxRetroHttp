@@ -1,6 +1,7 @@
 package com.bakerj.rxretrohttp.exception;
 
-import com.bakerj.rxretrohttp.RxRetroHttp;
+import android.text.TextUtils;
+
 import com.bakerj.rxretrohttp.bean.IApiResult;
 
 import org.apache.http.conn.ConnectTimeoutException;
@@ -66,8 +67,10 @@ public class ApiException extends IOException {
         } else if (e instanceof ServerException) {
             ServerException resultException = (ServerException) e;
             ex = new ApiException(resultException, resultException.getCode());
-//            ex.message = resultException.getMessage();
-            ex.message = defaultErrMsg;
+            ex.message = resultException.getMessage();
+            if (TextUtils.isEmpty(ex.message)) {
+                ex.message = defaultErrMsg;
+            }
             return ex;
         } else if (e instanceof ConnectException) {
             ex = new ApiException(e, NETWORK_ERROR);
