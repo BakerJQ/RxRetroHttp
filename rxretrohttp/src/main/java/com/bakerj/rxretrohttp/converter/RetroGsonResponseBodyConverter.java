@@ -34,7 +34,7 @@ class RetroGsonResponseBodyConverter<T, ApiResultType extends IApiResult> implem
     @Override
     public T convert(ResponseBody value) throws IOException {
         try {
-            String response = value.string();
+            String response = value.string().replaceAll("\\s*|\r|\n|\t", "");
             LogUtil.e("response:" + response);
             //parse to IApiResult based obj 解析Result
             ApiResultType apiResult = gson.fromJson(response, apiClass);
