@@ -34,6 +34,9 @@ import okhttp3.internal.platform.Platform;
 import okio.Buffer;
 import okio.BufferedSource;
 
+import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static okhttp3.internal.http.StatusLine.HTTP_CONTINUE;
 import static okhttp3.internal.platform.Platform.INFO;
 
 /**
@@ -198,7 +201,7 @@ public final class HttpLoggingInterceptor implements Interceptor {
                 logger.log(headers.name(i) + ": " + headers.value(i));
             }
 
-            if (!logBody || !HttpHeaders.hasBody(response)) {
+            if (!logBody || !hasBody(response)) {
                 logger.log("<-- END HTTP");
             } else if (bodyEncoded(response.headers())) {
                 logger.log("<-- END HTTP (encoded body omitted)");
@@ -234,6 +237,29 @@ public final class HttpLoggingInterceptor implements Interceptor {
     private boolean bodyEncoded(Headers headers) {
         String contentEncoding = headers.get("Content-Encoding");
         return contentEncoding != null && !contentEncoding.equalsIgnoreCase("identity");
+    }
+
+    public static boolean hasBody(Response response) {
+        // HEAD requests never yield a body regardless of the response headers.
+        if (response.request().method().equals("HEAD")) {
+            return false;
+        }
+
+        int responseCode = response.code();
+        if ((responseCode < HTTP_CONTINUE || responseCode >= 200)
+                && responseCode != HTTP_NO_CONTENT
+                && responseCode != HTTP_NOT_MODIFIED) {
+            return true;
+        }
+
+        // If the Content-Length or Transfer-Encoding headers disagree with the response code, the
+        // response is malformed. For best compatibility, we honor the headers.
+        if ((response.body() != null && response.body().contentLength() != -1)
+                || "chunked".equalsIgnoreCase(response.header("Transfer-Encoding"))) {
+            return true;
+        }
+
+        return false;
     }
 
     public enum Level {
