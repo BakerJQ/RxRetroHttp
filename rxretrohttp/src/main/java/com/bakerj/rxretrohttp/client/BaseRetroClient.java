@@ -1,7 +1,7 @@
 package com.bakerj.rxretrohttp.client;
 
 import com.bakerj.rxretrohttp.RxRetroHttp;
-import com.bakerj.rxretrohttp.converter.RetroGsonConverterFactory;
+import com.bakerj.rxretrohttp.converter.RetroJsonConverterFactory;
 import com.bakerj.rxretrohttp.exception.ApiException;
 import com.bakerj.rxretrohttp.exception.IExceptionHandler;
 import com.bakerj.rxretrohttp.func.ExceptionHandleFunc;
@@ -9,7 +9,6 @@ import com.bakerj.rxretrohttp.func.RetryExceptionFunc;
 import com.bakerj.rxretrohttp.interceptors.HttpLoggingInterceptor;
 import com.bakerj.rxretrohttp.util.RxSchedulerUtil;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
-import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +17,7 @@ import io.reactivex.ObservableTransformer;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
 /**
  * 抽象请求client
@@ -51,7 +50,8 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
         mDefaultErrMsg = RxRetroHttp.getDefaultErrMsg();
         mExceptionHandler = RxRetroHttp.getExceptionHandler();
         if (mExceptionHandler == null) {
-            mExceptionHandler = throwable -> ApiException.handleException(throwable, mDefaultErrMsg);
+            mExceptionHandler = throwable -> ApiException.handleException(throwable,
+                    mDefaultErrMsg);
         }
         generateOkClient();
         generateRetrofit();
@@ -94,11 +94,11 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
 
     protected void setRetrofitBuilder(Retrofit.Builder retrofitBuilder) {
         if (RxRetroHttp.getApiResultClass() == null) {
-            retrofitBuilder.addConverterFactory(GsonConverterFactory.create())
+            retrofitBuilder.addConverterFactory(RetroJsonConverterFactory.create(null))
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
             return;
         }
-        retrofitBuilder.addConverterFactory(RetroGsonConverterFactory.create(RxRetroHttp
+        retrofitBuilder.addConverterFactory(RetroJsonConverterFactory.create(RxRetroHttp
                 .getApiResultClass())).addCallAdapterFactory(RxJava2CallAdapterFactory.create());
     }
 

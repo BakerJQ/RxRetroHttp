@@ -21,7 +21,7 @@ public class APP extends Application {
                 .generateRetroClient()
 
                 .setApiResultClass(GankApiResult.class)//other result
-                .setBaseUrl("http://gank.io/api/data/")//other url
+                .setBaseUrl("http://gank.io/api/v2/data/")//other url
                 .setDefaultErrMsg("Gank开小差了")
                 .generateRetroClient("Gank")
 

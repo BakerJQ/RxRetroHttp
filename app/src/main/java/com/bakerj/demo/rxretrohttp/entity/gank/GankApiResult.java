@@ -3,16 +3,17 @@ package com.bakerj.demo.rxretrohttp.entity.gank;
 import com.bakerj.rxretrohttp.bean.IApiResult;
 
 public class GankApiResult<T> implements IApiResult<T> {
-    private boolean error;
-    private T results;
+    private int status;
+    private T data;
+
     @Override
     public boolean isSuccess() {
-        return !error;
+        return status == 100;
     }
 
     @Override
     public T getData() {
-        return results;
+        return data;
     }
 
     @Override
@@ -27,22 +28,18 @@ public class GankApiResult<T> implements IApiResult<T> {
 
     @Override
     public String getDataField() {
-        return "results";
+        return "data";
     }
 
-    public boolean isError() {
-        return error;
+    public int getStatus() {
+        return status;
     }
 
-    public void setError(boolean error) {
-        this.error = error;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
-    public T getResults() {
-        return results;
-    }
-
-    public void setResults(T results) {
-        this.results = results;
+    public void setData(T data) {
+        this.data = data;
     }
 }
