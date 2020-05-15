@@ -46,18 +46,31 @@ class RetroJsonResponseBodyConverter<T, ApiResultType extends IApiResult> implem
                     // only
                     // care for success or not)
                     //cast directly
-                } else if (type.equals(apiClass)) {
+                }
+                if (type.equals(apiClass)) {
                     //noinspection unchecked
                     return (T) apiResult;
-                } else if (apiResult.getData() == null) {
-                    throw new SuccessWithNullDataException(apiResult.getResultMsg(), apiResult
-                            .getResultCode());
                 }
                 //if there's no data field, means that the result itself is the returned data
                 //如果未设置data字段，则认为返回的整个结果就是数据段
                 if (TextUtils.isEmpty(apiResult.getDataField())) {
                     return JSON.parseObject(response, type);
                 }
+
+                //if the target type is a subclass of apiClass, means that the result itself is the returned data
+                //如果type是apiClass的子类，则认为返回的整个结果就是数据段
+                if (type instanceof Class) {
+                    Class typeSuperClass = ((Class) type).getSuperclass();
+                    if (typeSuperClass != null && typeSuperClass.getName().equals(apiClass.getName())) {
+                        return JSON.parseObject(response, type);
+                    }
+                }
+
+                if (apiResult.getData() == null) {
+                    throw new SuccessWithNullDataException(apiResult.getResultMsg(), apiResult
+                            .getResultCode());
+                }
+
                 //parse data field 解析data数据
                 return JSON.parseObject(JSONObject.parseObject(response).getString(apiResult
                         .getDataField()), type);
