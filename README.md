@@ -25,7 +25,7 @@ allprojects {
 Add the dependency
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.11'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.1.0'
 }
 
 ```
@@ -112,8 +112,18 @@ RxRetroHttp.create(YourApiService.class).getTestInfo()
 ## Proguard
 - Add Retrofit proguard
 - Add OkHttp proguard
-- Add Gson proguard
 - Deal with your data entity
+
+## For Android Api Level 21-
+For 21- projects, add the dependency like below
+``` groovy
+dependencies {
+    implementation ('com.github.BakerJQ:RxRetroHttp:1.1.0'){
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+}
+```
 
 ## Thanks
 Thanks To （[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）

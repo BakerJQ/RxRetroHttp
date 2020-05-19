@@ -26,7 +26,7 @@ allprojects {
 在app或相应使用的module中加入
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.0.11'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.1.0'
 }
 
 ```
@@ -110,6 +110,18 @@ public interface YourApiService {
 ```java
 RxRetroHttp.create(YourApiService.class).getTestInfo()
 ```
+
+## Android API等级小于21
+对于Android API等级小于21的工程，按如下方式引入该库
+``` groovy
+dependencies {
+    implementation ('com.github.BakerJQ:RxRetroHttp:1.1.0'){
+        exclude group: 'com.squareup.okhttp3', module: 'okhttp'
+    }
+    implementation 'com.squareup.okhttp3:okhttp:3.12.0'
+}
+```
+
 ## 感谢
 感谢（[RxEasyHttp](https://github.com/zhou-you/RxEasyHttp)）提供的思路
 
