@@ -2,6 +2,7 @@ package com.bakerj.rxretrohttp;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
 
 import com.bakerj.rxretrohttp.annotation.RetroTag;
 import com.bakerj.rxretrohttp.client.BaseRetroClient;
@@ -34,6 +35,9 @@ import retrofit2.Retrofit;
  * Rx+Retrofit
  */
 public class RxRetroHttp {
+    public static final String MOCK_DATA_KEY = "MockData", MOCK_FILE_PATH_KEY = "MockFilePath",
+            MOCK_ENABLE_KEY = "MockEnable", MOCK_DELAY_KEY = "MockDelay";
+    private static String mockDataKey = MOCK_DATA_KEY, mockFilePathKey = MOCK_FILE_PATH_KEY;
 
     private static final int DEFAULT_TIMEOUT = 10000;//default timeout 默认3chaoshi
     private static final int DEFAULT_RETRY_COUNT = 3;//default retry count 默认重试
@@ -53,6 +57,7 @@ public class RxRetroHttp {
     //tag-请求Client对，用于处理多返回结果和多url的情况
     private Map<String, BaseRetroClient> mRetroClientMap = new HashMap<>();
     private boolean mIsDebug = false;//isDebug
+    private boolean mMockEnable = false;//mock data enable
     private Class mApiResultClass;//api result class 返回结果对应的类
     private String mDefaultErrorMsg = "";
     private IExceptionHandler mExceptionHandler;
@@ -146,6 +151,19 @@ public class RxRetroHttp {
     @Deprecated
     public RxRetroHttp setDebug(boolean isDebug) {
         mIsDebug = isDebug;
+        return this;
+    }
+
+    public static boolean isMockEnable(){
+        return getInstance().mMockEnable;
+    }
+
+    /**
+     * set mock data enable
+     * @param enable enable or not
+     */
+    public RxRetroHttp setMockEnable(boolean enable){
+        mMockEnable = enable;
         return this;
     }
 
@@ -321,5 +339,28 @@ public class RxRetroHttp {
             }
             return upstream;
         };
+    }
+
+    public static String getMockDataKey() {
+        return mockDataKey;
+    }
+
+    public static void setMockDataKey(String mockDataKey) {
+        RxRetroHttp.mockDataKey = mockDataKey;
+    }
+
+    public static String getMockFilePathKey() {
+        return mockFilePathKey;
+    }
+
+    public static void setMockFilePathKey(String mockFilePathKey) {
+        RxRetroHttp.mockFilePathKey = mockFilePathKey;
+    }
+
+    public static Context getContext() {
+        if (sApplication == null) {
+            return null;
+        }
+        return sApplication.getApplicationContext();
     }
 }

@@ -26,7 +26,7 @@ allprojects {
 在app或相应使用的module中加入
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.1.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.0'
 }
 
 ```
@@ -111,11 +111,49 @@ public interface YourApiService {
 RxRetroHttp.create(YourApiService.class).getTestInfo()
 ```
 
+### Mock数据
+你可以通过json字符串以及文件的方式进行mock。
+
+若要开启mock，请在初始化时进行设置。
+
+```java
+RxRetroHttp.init(this).setMockEnable(true)
+```
+
+#### 通过文件进行Mock
+Step 1. 将mock文件放到assets下
+
+Step 2. 对API方法增加Headers注解
+
+```java
+@Headers({RxRetroHttp.MOCK_FILE_PATH_KEY + ":mockfile.json")
+@GET("test/info")
+Observable<TestInfo> getTestInfo();
+```
+
+#### 通过Json字符串进行Mock
+直接添加Headers
+
+```java
+@Headers({RxRetroHttp.MOCK_DATA_KEY + ":{\"testInfo\":\"info\"}")
+@GET("test/info")
+Observable<TestInfo> getTestInfo();
+```
+
+#### 所支持的Header Key
+
+| key | 描述 |
+| ---- | ---- |
+| MOCK_DATA_KEY | mock json字符串 |
+| MOCK_FILE_PATH_KEY | mock assets文件路径 |
+| MOCK_ENABLE_KEY | 是否开启mock |
+| MOCK_DELAY_KEY | mock返回结果的延时 |
+
 ## Android API等级小于21
 对于Android API等级小于21的工程，按如下方式引入该库
 ``` groovy
 dependencies {
-    implementation ('com.github.BakerJQ:RxRetroHttp:1.1.0'){
+    implementation ('com.github.BakerJQ:RxRetroHttp:1.2.0'){
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'

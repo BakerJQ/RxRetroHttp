@@ -34,4 +34,14 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_gank" />
 
+    <Button
+        android:id="@+id/btn_mock_enable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/btn_weather"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="100dp"
+        android:text="Click to disable mock"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

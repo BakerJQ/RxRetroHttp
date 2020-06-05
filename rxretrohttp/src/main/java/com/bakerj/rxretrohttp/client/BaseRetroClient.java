@@ -7,6 +7,7 @@ import com.bakerj.rxretrohttp.exception.IExceptionHandler;
 import com.bakerj.rxretrohttp.func.ExceptionHandleFunc;
 import com.bakerj.rxretrohttp.func.RetryExceptionFunc;
 import com.bakerj.rxretrohttp.interceptors.HttpLoggingInterceptor;
+import com.bakerj.rxretrohttp.interceptors.MockDataInterceptor;
 import com.bakerj.rxretrohttp.util.RxSchedulerUtil;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 
@@ -31,6 +32,7 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
     private int mRetryCount;//retry count 重试次数
     private int mRetryDelay;//retry delay 重试延时
     private boolean mIsDebug;//is debug mode 是否为debug
+    private boolean mMockEnable;//is mock enable 是否支持mock
     private Retrofit mRetrofit;
     private OkHttpClient mOkHttpClient;
     private OkHttpClient.Builder mOkHttpClientBuilder;
@@ -47,6 +49,7 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
         mRetryCount = RxRetroHttp.getRetryCount();
         mRetryDelay = RxRetroHttp.getRetryDelay();
         mIsDebug = RxRetroHttp.isDebug();
+        mMockEnable = RxRetroHttp.isMockEnable();
         mDefaultErrMsg = RxRetroHttp.getDefaultErrMsg();
         mExceptionHandler = RxRetroHttp.getExceptionHandler();
         if (mExceptionHandler == null) {
@@ -79,6 +82,9 @@ public abstract class BaseRetroClient<Client extends BaseRetroClient> {
             okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
             okHttpClientBuilder.addInterceptor(new HttpLoggingInterceptor().setLevel
                     (HttpLoggingInterceptor.Level.BODY));
+        }
+        if (mMockEnable) {
+            okHttpClientBuilder.addInterceptor(new MockDataInterceptor());
         }
     }
 

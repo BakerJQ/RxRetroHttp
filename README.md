@@ -25,7 +25,7 @@ allprojects {
 Add the dependency
 ``` groovy
 dependencies {
-    implementation 'com.github.BakerJQ:RxRetroHttp:1.1.0'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.0'
 }
 
 ```
@@ -48,16 +48,19 @@ Mention:
 - You need to do this after you called init()
 - DON'T forget to add the 'Tag' in generateRetroClient() function
 - If you don't set an ApiResultClass, the lib will use GsonConverterFactory as default, this means that the lib will not deal with response logic for you, or you can add your own ResponseConverter
+
 ```java
 RxRetroHttp.getInstance()
            .setApiResultClass(YourApiResult.class)//other result
            .setBaseUrl("http://host/api/data/")//other url
            .generateRetroClient("YourTag");//other request tag
 ```
+
 #### Settings
 You can customize your http settings by get and reset the builders, or calling setting functions
 
 Mention: This must be done AFTER init() and BEFORE generateRetroClient() function
+
 ```java
 RxRetroHttp.init().setXXX().setXXX();
 Retrofit.Builder retrofitBuilder = RxRetroHttp.getRetrofitBuilder();
@@ -109,6 +112,45 @@ Just define a call like Retrofit
 ```java
 RxRetroHttp.create(YourApiService.class).getTestInfo()
 ```
+
+### Mock Data
+You can mock your api data in two ways: from file or from json string.
+
+You should enable mock when init;
+
+```java
+RxRetroHttp.init(this).setMockEnable(true)
+```
+
+#### Mock From File
+Step 1. Put your mock data file under assets dir
+
+Step 2. Add headers to your api function
+
+```java
+@Headers({RxRetroHttp.MOCK_FILE_PATH_KEY + ":mockfile.json")
+@GET("test/info")
+Observable<TestInfo> getTestInfo();
+```
+
+#### Mock From Json String
+Just add headers to your api function
+
+```java
+@Headers({RxRetroHttp.MOCK_DATA_KEY + ":{\"testInfo\":\"info\"}")
+@GET("test/info")
+Observable<TestInfo> getTestInfo();
+```
+
+#### Header Keys
+
+| key | desc |
+| ---- | ---- |
+| MOCK_DATA_KEY | mock json string |
+| MOCK_FILE_PATH_KEY | mock assets file path |
+| MOCK_ENABLE_KEY | enable or disable mock |
+| MOCK_DELAY_KEY | delay duration of response |
+
 ## Proguard
 - Add Retrofit proguard
 - Add OkHttp proguard
@@ -118,7 +160,7 @@ RxRetroHttp.create(YourApiService.class).getTestInfo()
 For 21- projects, add the dependency like below
 ``` groovy
 dependencies {
-    implementation ('com.github.BakerJQ:RxRetroHttp:1.1.0'){
+    implementation ('com.github.BakerJQ:RxRetroHttp:1.2.0'){
         exclude group: 'com.squareup.okhttp3', module: 'okhttp'
     }
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
