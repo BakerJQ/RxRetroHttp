@@ -42,9 +42,9 @@ afterEvaluate {
                 from components.findByName('release')
 
                 // You can then customize attributes of the publication as shown below.
-                groupId = 'com.bakerj'
-                artifactId = 'rxretrohttp'
-                version = '1.2.4'
+                groupId = 'com.github.BakerJQ'
+                artifactId = 'RxRetroHttp'
+                version = '1.2.5'
             }
             // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
