@@ -26,7 +26,7 @@ allprojects {
 在app或相应使用的module中加入
 ``` groovy
 dependencies {
-    implementation 'com.bakerj:rxretrohttp:1.2.4'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.4'
 }
 
 ```

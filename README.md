@@ -25,7 +25,7 @@ allprojects {
 Add the dependency
 ``` groovy
 dependencies {
-    implementation 'com.bakerj:rxretrohttp:1.2.4'
+    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.4'
 }
 
 ```
