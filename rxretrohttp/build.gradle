@@ -43,10 +43,21 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.BakerJQ'
                 artifactId = 'RxRetroHttp'
-                version = '1.2.9'
+                version = '1.2.10'
                 artifact(bundleReleaseAar)
-            }
-            // Creates a Maven publication called “debug”.
+                //generate pom nodes for dependencies
+                pom.withXml {
+                    def dependenciesNode = asNode().appendNode('dependencies')
+                    configurations.implementation.allDependencies.each { dependency ->
+                        if (dependency.name != 'unspecified') {
+                            def dependencyNode = dependenciesNode.appendNode('dependency')
+                            dependencyNode.appendNode('groupId', dependency.group)
+                            dependencyNode.appendNode('artifactId', dependency.name)
+                            dependencyNode.appendNode('version', dependency.version)
+                        }
+                    }
+                }
+                // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
 //                // Applies the component for the debug build variant.
 //                from components.debug
@@ -55,6 +66,7 @@ afterEvaluate {
 //                artifactId = 'final-debug'
 //                version = '1.0'
 //            }
+            }
         }
     }
 }

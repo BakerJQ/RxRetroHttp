@@ -47,7 +47,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(':rxretrohttp')
-//    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.9'
+//    implementation 'com.github.BakerJQ:RxRetroHttp:1.2.10'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
