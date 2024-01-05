@@ -1,8 +1,6 @@
 apply plugin: 'com.android.library'
 apply plugin: 'maven-publish'
 
-//group='com.github.BakerJQ'
-
 android {
     compileSdkVersion versions.compileSdk
     defaultConfig {
@@ -37,14 +35,14 @@ afterEvaluate {
     publishing {
         publications {
             // Creates a Maven publication called "release".
-            release(MavenPublication) {
+            jitpack(MavenPublication) {
                 // Applies the component for the release build variant.
-                from components.findByName('release')
+                from components.findByName('jitpack')
 
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.BakerJQ'
                 artifactId = 'RxRetroHttp'
-                version = '1.2.6'
+                version = '1.2.7'
             }
             // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
