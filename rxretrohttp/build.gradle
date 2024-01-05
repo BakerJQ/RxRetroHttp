@@ -44,7 +44,7 @@ afterEvaluate {
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.BakerJQ'
                 artifactId = 'RxRetroHttp'
-                version = '1.2.5'
+                version = '1.2.6'
             }
             // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
