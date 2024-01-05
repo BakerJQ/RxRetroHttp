@@ -1,7 +1,7 @@
 ext {
     versions = [
             'versionCode'   : 14,
-            'versionName'   : '1.2.7',
+            'versionName'   : '1.2.9',
 
             'compileSdk'    : 33,
             'minSdk'        : 15,

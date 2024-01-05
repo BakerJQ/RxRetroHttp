@@ -31,23 +31,20 @@ dependencies {
     implementation 'com.facebook.stetho:stetho-okhttp3:1.5.0'
 }
 
-tasks.register('generateSourcesJar', Jar) {
-    from android.sourceSets.main.java.srcDirs
-}
-
 afterEvaluate {
     publishing {
         publications {
             // Creates a Maven publication called "release".
             release(MavenPublication) {
+//                println("Com-------:"+components*.name)
                 // Applies the component for the release build variant.
-                from components.findByName('release')
+//                from components.release
 
                 // You can then customize attributes of the publication as shown below.
                 groupId = 'com.github.BakerJQ'
                 artifactId = 'RxRetroHttp'
-                version = '1.2.8'
-                artifact generateSourcesJar
+                version = '1.2.9'
+                artifact(bundleReleaseAar)
             }
             // Creates a Maven publication called “debug”.
 //            debug(MavenPublication) {
