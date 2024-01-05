@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.bakerj.demo.rxretrohttp">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
         android:name=".APP"
@@ -11,7 +10,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,7 +20,7 @@
         </activity>
         <activity android:name=".gank.GankActivity" />
         <activity android:name=".weather.WeatherActivity" />
-        <activity android:name=".github.GithubActivity"></activity>
+        <activity android:name=".github.GithubActivity" />
     </application>
 
 </manifest>

@@ -14,14 +14,14 @@ public class APP extends Application {
     public void onCreate() {
         super.onCreate();
         Utils.init(this);
-        RxRetroHttp.init(this).setMockEnable(true)//set mock enable
+        RxRetroHttp.init(this, true).setMockEnable(true)//set mock enable
                 .setBaseUrl("https://api.github.com/")//your main url
                 .setDefaultErrMsg("Github开小差了")//default error hint message
                 .setApiResultClass(GithubApiResult.class)//your main api result structure, if not, will use default gson converter
                 .generateRetroClient()
 
                 .setApiResultClass(GankApiResult.class)//other result
-                .setBaseUrl("http://gank.io/api/v2/data/")//other url
+                .setBaseUrl("https://gank.io/api/v2/data/")//other url
                 .setDefaultErrMsg("Gank开小差了")
                 .generateRetroClient("Gank")
 

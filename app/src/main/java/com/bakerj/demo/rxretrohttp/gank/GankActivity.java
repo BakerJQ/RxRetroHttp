@@ -2,6 +2,9 @@ package com.bakerj.demo.rxretrohttp.gank;
 
 import android.os.Bundle;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.bakerj.demo.rxretrohttp.BaseActivity;
 import com.bakerj.demo.rxretrohttp.R;
 import com.bakerj.demo.rxretrohttp.entity.gank.GankGirl;
@@ -9,9 +12,6 @@ import com.bakerj.rxretrohttp.RxRetroHttp;
 import com.bakerj.rxretrohttp.subscriber.ApiObserver;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class GankActivity extends BaseActivity {
     private GankGirlAdapter adapter = new GankGirlAdapter();
